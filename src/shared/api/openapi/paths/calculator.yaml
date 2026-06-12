@@ -1,0 +1,58 @@
+post:
+  summary: Calculate loan redemption costs
+  description: Calculates accrued interest and fees up to a specific target date based on statutory regulations of PfandlV.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - loanAmountCents
+            - startDate
+            - targetDate
+          properties:
+            loanAmountCents:
+              type: integer
+              minimum: 0
+              example: 50000
+            startDate:
+              type: string
+              format: date
+              example: "2026-01-10"
+            targetDate:
+              type: string
+              format: date
+              description: Target calculation threshold (usually current client date).
+              example: "2026-04-12"
+  responses:
+    "200":
+      description: Calculation completed successfully. Financial metrics returned in cents.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - accruedInterestCents
+              - accruedFeesCents
+              - totalRedemptionAmountCents
+              - monthsCalculated
+            properties:
+              accruedInterestCents:
+                type: integer
+                description: Statutory interest calculated over the period (rounded up to full months).
+                example: 1500
+              accruedFeesCents:
+                type: integer
+                description: Processing and storage fees calculated from regulatory tables.
+                example: 3000
+              totalRedemptionAmountCents:
+                type: integer
+                description: Total settlement threshold required to redeem the item (loanAmountCents + interest + fees).
+                example: 54500
+              monthsCalculated:
+                type: integer
+                description: Number of billable months computed (partial months count as full months under § 11 PfandlV).
+                example: 3
+    "400":
+      $ref: "../components/responses.yaml#/ValidationError"

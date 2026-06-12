@@ -1,0 +1,26 @@
+LoanCategory:
+  type: string
+  enum: [JEWELRY, ELECTRONICS, WATCHES, ART]
+  example: "JEWELRY"
+
+LoanStatus:
+  type: string
+  enum: [ACTIVE, OVERDUE, EXTENDED, AUCTION_READY, REDEEMED]
+  description: |
+    State machine constraints driven by PfandlV:
+    - ACTIVE: Standard active contract (typically 3 months).
+    - OVERDUE: Grace period reached (4th month, statutory late fees applicable).
+    - EXTENDED: Interest/fees paid, contract renewed.
+    - AUCTION_READY: Eligible for liquidation (overdue > 4 months, moved to auction pool).
+    - REDEEMED: Repaid and claimed by the customer.
+  example: "ACTIVE"
+
+UserRole:
+  type: string
+  enum: [APPRAISER, CASHIER, MANAGER]
+  description: |
+    RBAC Definitions:
+    - APPRAISER: Evaluates item value and creates loan contracts.
+    - CASHIER: Handles payouts, redemptions, and extensions.
+    - MANAGER: Monitors branch metrics and approves auction batches.
+  example: "APPRAISER"

@@ -1,0 +1,28 @@
+PageParam:
+  name: page
+  in: query
+  required: false
+  schema:
+    type: integer
+    default: 1
+    minimum: 1
+  description: Current page number for TanStack Table pagination.
+
+SizeParam:
+  name: size
+  in: query
+  required: false
+  schema:
+    type: integer
+    default: 10
+    minimum: 1
+  description: Number of items per page.
+
+IdParam:
+  name: id
+  in: path
+  required: true
+  schema:
+    type: string
+    format: uuid
+  description: Unique UUID identifier of the resource.

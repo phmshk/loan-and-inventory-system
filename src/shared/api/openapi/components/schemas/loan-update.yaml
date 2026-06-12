@@ -1,0 +1,42 @@
+type: object
+properties:
+  customerId:
+    type: string
+    format: uuid
+    example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+  loanAmountCents:
+    type: integer
+    minimum: 0
+    description: Principle loan amount in cents (EUR * 100)
+    example: 45000
+  itemDescription:
+    type: string
+    description: Detailed description of the item for identification.
+    example: "Goldring 585 gestempelt, Besatz 1 Diamant ca. 0.25ct, Gesamtgewicht 4.2g"
+  category:
+    $ref: "./enums.yaml#/LoanCategory"
+  status:
+    $ref: "./enums.yaml#/LoanStatus"
+  startDate:
+    type: string
+    format: date
+    description: Contract conclusion date.
+    example: "2026-03-15"
+  endDate:
+    type: string
+    format: date
+    description: Official maturity date before statutory grace periods kick in.
+    example: "2026-06-15"
+  interestRatePercent:
+    type: number
+    description: Monthly statutory interest rate. Strictly 1.0% for loans above 300 EUR as per § 10 PfandlV.
+    example: 1.0
+  feesCents:
+    type: integer
+    minimum: 0
+    description: Fixed monthly storage and insurance fees in cents, mandated by the PfandlV tariff table.
+    example: 1250
+  branchId:
+    type: string
+    format: uuid
+    example: "550e8400-e29b-41d4-a716-446655440000"

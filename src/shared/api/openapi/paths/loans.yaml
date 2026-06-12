@@ -1,0 +1,145 @@
+/loans:
+  get:
+    summary: Fetch loan registry
+    description: Returns a paginated list of loans. Supports server-side filtering, sorting, and pagination for TanStack Table.
+    parameters:
+      - $ref: "../components/parameters.yaml#/PageParam"
+      - $ref: "../components/parameters.yaml#/SizeParam"
+      - name: status
+        in: query
+        required: false
+        schema:
+          $ref: "../components/schemas/enums.yaml#/LoanStatus"
+      - name: category
+        in: query
+        required: false
+        schema:
+          $ref: "../components/schemas/enums.yaml#/LoanCategory"
+      - name: sortBy
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "endDate"
+      - name: sortOrder
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [asc, desc]
+          default: asc
+    responses:
+      "200":
+        description: Paginated loans payload retrieved successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - items
+                - totalItems
+                - totalPages
+              properties:
+                items:
+                  type: array
+                  items:
+                    $ref: "../components/schemas/loan.yaml"
+                totalItems:
+                  type: integer
+                  example: 142
+                totalPages:
+                  type: integer
+                  example: 15
+  post:
+    summary: Create a new loan
+    description: Creates a new loan registry entry.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/loan-create.yaml"
+    responses:
+      "201":
+        description: Loan created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/loan.yaml"
+      "400":
+        $ref: "../components/responses.yaml#/ValidationError"
+
+/loans/{id}:
+  parameters:
+    - $ref: "../components/parameters.yaml#/IdParam"
+  get:
+    summary: Get loan details by ID
+    description: Returns full entity details for a specific loan ledger.
+    responses:
+      "200":
+        description: Loan details payload.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/loan.yaml"
+      "404":
+        $ref: "../components/responses.yaml#/NotFoundError"
+
+  patch:
+    summary: Update loan details
+    description: Updates any or all fields of an existing loan by its ID.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/loan-update.yaml"
+    responses:
+      "200":
+        description: Loan updated successfully. Returns updated entity to synchronise TanStack Query cache.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/loan.yaml"
+      "400":
+        $ref: "../components/responses.yaml#/ValidationError"
+      "404":
+        $ref: "../components/responses.yaml#/NotFoundError"
+
+  delete:
+    summary: Delete a loan registry entry
+    description: Permanently removes a loan record from the registry by its ID.
+    responses:
+      "204":
+        description: Loan deleted successfully. No content is returned.
+      "404":
+        $ref: "../components/responses.yaml#/NotFoundError"
+
+/loans/{id}/status:
+  parameters:
+    - $ref: "../components/parameters.yaml#/IdParam"
+  patch:
+    summary: Update loan status
+    description: Used primarily by the Auction Preparation dashboard to commit Optimistic Updates when preparing items for liquidation.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - status
+            properties:
+              status:
+                $ref: "../components/schemas/enums.yaml#/LoanStatus"
+    responses:
+      "200":
+        description: Status mutated successfully. Returns updated entity to synchronise TanStack Query cache.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/loan.yaml"
+      "400":
+        $ref: "../components/responses.yaml#/ValidationError"
+      "404":
+        $ref: "../components/responses.yaml#/NotFoundError"

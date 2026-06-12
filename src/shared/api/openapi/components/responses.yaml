@@ -1,0 +1,47 @@
+NotFoundError:
+  description: The requested resource was not found.
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - code
+          - message
+        properties:
+          code:
+            type: string
+            example: "RESOURCE_NOT_FOUND"
+          message:
+            type: string
+            example: "Loan with specified ID does not exist."
+
+ValidationError:
+  description: Invalid request parameters or payload.
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - code
+          - message
+        properties:
+          code:
+            type: string
+            example: "VALIDATION_ERROR"
+          message:
+            type: string
+            example: "Provided data violates Pfandleiherverordnung rules."
+          details:
+            type: array
+            items:
+              type: object
+              required:
+                - field
+                - error
+              properties:
+                field:
+                  type: string
+                  example: "loanAmountCents"
+                error:
+                  type: string
+                  example: "Value must be a positive integer representing cents."

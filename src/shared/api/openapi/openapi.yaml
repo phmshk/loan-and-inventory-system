@@ -1,0 +1,40 @@
+openapi: 3.0.3
+info:
+  title: Internal Inventory & Loan Manager API
+  description: API contract for the internal ERP system
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Mock Service Worker
+paths:
+  /loans:
+    $ref: "./paths/loans.yaml#/~1loans"
+  /loans/{id}:
+    $ref: "./paths/loans.yaml#/~1loans~1{id}"
+  /loans/{id}/status:
+    $ref: "./paths/loans.yaml#/~1loans~1{id}~1status"
+  /calculations:
+    $ref: "./paths/calculator.yaml"
+components:
+  responses:
+    NotFoundError:
+      $ref: "./components/responses.yaml#/NotFoundError"
+    ValidationError:
+      $ref: "./components/responses.yaml#/ValidationError"
+  schemas:
+    Loan:
+      $ref: "./components/schemas/loan.yaml"
+    LoanCreate:
+      $ref: "./components/schemas/loan-create.yaml"
+    LoanUpdate:
+      $ref: "./components/schemas/loan-update.yaml"
+    Branch:
+      $ref: "./components/schemas/branch.yaml"
+    User:
+      $ref: "./components/schemas/user.yaml"
+    LoanCategory:
+      $ref: "./components/schemas/enums.yaml#/LoanCategory"
+    LoanStatus:
+      $ref: "./components/schemas/enums.yaml#/LoanStatus"
+    UserRole:
+      $ref: "./components/schemas/enums.yaml#/UserRole"

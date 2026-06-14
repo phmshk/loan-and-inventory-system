@@ -1,6 +1,5 @@
 import { http, HttpResponse } from "msw";
 import { usersDB } from "../db/users.db";
-import { branchesDB } from "../db/branches.db";
 import { CONFIG } from "@/shared/model/config";
 
 export const authHandlers = [
@@ -26,20 +25,14 @@ export const authHandlers = [
     const user = usersDB.find((u) => u.id === id);
 
     if (!user) {
-      if (!user) {
-        return HttpResponse.json(
-          {
-            message: "Unauthorized",
-          },
-          { status: 401 },
-        );
-      }
+      return HttpResponse.json(
+        {
+          message: "Unauthorized",
+        },
+        { status: 401 },
+      );
     }
 
     return HttpResponse.json(user);
-  }),
-
-  http.get(`${CONFIG.API_BASE_URL}/branches`, () => {
-    return HttpResponse.json(branchesDB);
   }),
 ];

@@ -1,7 +1,6 @@
 import { CONFIG } from "@/shared/model/config";
 import { http, HttpResponse } from "msw";
 import type {
-  GetLoansResponse,
   UpdateLoanStatusRequest,
   CreateLoanRequest,
   CreateLoanResponse,
@@ -9,11 +8,11 @@ import type {
 } from "../../model/types";
 import { loansDBMethods } from "../db/loans.db";
 import { branchesDB } from "../db/branches.db";
-import { loanFiltersSchema } from "../../model/filters.types";
+import { loanFiltersSchema } from "@/entities/loan";
 
 export const loanHandlers = [
   // GET /loans
-  http.get(`${CONFIG.API_BASE_URL}/loans`, ({ request }) => {
+  http.get(`${CONFIG.API_BASE_URL}/loans*`, ({ request }) => {
     const url = new URL(request.url);
     const queryParams = Object.fromEntries(url.searchParams.entries());
 
@@ -29,48 +28,7 @@ export const loanHandlers = [
       );
     }
 
-    const { page, size, sortOrder, category, sortBy, status } = result.data;
-
-    let filteredLoans = loansDBMethods.getAll();
-
-    // apply filters
-    if (status) {
-      filteredLoans = filteredLoans.filter((loan) => loan.status === status);
-    }
-
-    if (category) {
-      filteredLoans = filteredLoans.filter(
-        (loan) => loan.category === category,
-      );
-    }
-
-    // sort loans
-    if (sortBy) {
-      filteredLoans.sort((a, b) => {
-        const valueA = a[sortBy as keyof typeof a];
-        const valueB = b[sortBy as keyof typeof b];
-
-        if (typeof valueA === "number" && typeof valueB === "number") {
-          return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
-        }
-
-        return sortOrder === "asc"
-          ? String(valueA).localeCompare(String(valueB))
-          : String(valueB).localeCompare(String(valueA));
-      });
-    }
-
-    // pagination
-    const totalItems = filteredLoans.length;
-    const totalPages = Math.ceil(totalItems / size);
-    const startIndex = (page - 1) * size;
-    const paginatedItems = filteredLoans.slice(startIndex, startIndex + size);
-
-    const responsePayload: GetLoansResponse = {
-      items: paginatedItems,
-      totalItems,
-      totalPages,
-    };
+    const responsePayload = loansDBMethods.query(result.data);
 
     return HttpResponse.json(responsePayload, { status: 200 });
   }),

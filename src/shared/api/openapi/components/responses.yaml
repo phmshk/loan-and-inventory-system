@@ -45,3 +45,37 @@ ValidationError:
                 error:
                   type: string
                   example: "Value must be a positive integer representing cents."
+
+UnauthorizedError:
+  description: The request lacks valid authentication credentials.
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - code
+          - message
+        properties:
+          code:
+            type: string
+            example: "UNAUTHORIZED"
+          message:
+            type: string
+            example: "Unauthorized access or missing token."
+
+ServerError:
+  description: An unexpected internal server error occurred.
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - code
+          - message
+        properties:
+          code:
+            type: string
+            example: "INTERNAL_SERVER_ERROR"
+          message:
+            type: string
+            example: "An unexpected error occurred. Please try again later."

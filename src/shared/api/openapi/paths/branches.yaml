@@ -1,0 +1,17 @@
+/branches:
+  get:
+    summary: List all branches
+    description: Returns a list of all available business branches.
+    responses:
+      "200":
+        description: Array of branches.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../components/schemas/branch.yaml"
+      "401":
+        $ref: "../components/responses.yaml#/UnauthorizedError"
+      "500":
+        $ref: "../components/responses.yaml#/ServerError"

@@ -19,15 +19,12 @@
         in: query
         required: false
         schema:
-          type: string
-          example: "endDate"
+          $ref: "../components/schemas/enums.yaml#/LoanSortFields"
       - name: sortOrder
         in: query
         required: false
         schema:
-          type: string
-          enum: [asc, desc]
-          default: asc
+          $ref: "../components/schemas/enums.yaml#/LoanSort"
     responses:
       "200":
         description: Paginated loans payload retrieved successfully.
@@ -50,6 +47,10 @@
                 totalPages:
                   type: integer
                   example: 15
+      "401":
+        $ref: "../components/responses.yaml#/UnauthorizedError"
+      "500":
+        $ref: "../components/responses.yaml#/ServerError"
   post:
     summary: Create a new loan
     description: Creates a new loan registry entry.

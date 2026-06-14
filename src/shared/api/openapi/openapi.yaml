@@ -15,6 +15,12 @@ paths:
     $ref: "./paths/loans.yaml#/~1loans~1{id}~1status"
   /calculations:
     $ref: "./paths/calculator.yaml"
+  /auth/login:
+    $ref: "./paths/auth.yaml#/~1auth~1login"
+  /auth/me:
+    $ref: "./paths/auth.yaml#/~1auth~1me"
+  /branches:
+    $ref: "./paths/branches.yaml#/~1branches"
 components:
   responses:
     NotFoundError:

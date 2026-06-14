@@ -1,0 +1,46 @@
+/auth/login:
+  post:
+    summary: User login
+    description: Authenticates a user by username and returns user details.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - username
+            properties:
+              username:
+                type: string
+                example: "johndoe"
+    responses:
+      "200":
+        description: Successfully authenticated.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/user.yaml"
+      "404":
+        $ref: "../components/responses.yaml#/NotFoundError"
+
+/auth/me:
+  get:
+    summary: Get current user
+    description: Retrieves the current authenticated user by their ID query parameter.
+    parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      "200":
+        description: Current user payload.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/user.yaml"
+      "401":
+        $ref: "../components/responses.yaml#/UnauthorizedError"

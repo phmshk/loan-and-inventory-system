@@ -1,13 +1,27 @@
-import { CONFIG } from "@/shared/model/config";
+import { RouterProvider } from "@tanstack/react-router";
+import { router } from "./main";
+import { useCurrentUser, useIsAuthenticated } from "@/entities/session";
+import { useIsBranchSelected } from "@/entities/branch";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
 function App() {
-  fetch("/api/v1/loans?page=1")
-    .then((res) => res.json())
-    .then(console.log);
+  const isAuthenticated = useIsAuthenticated();
+  const isBranchSelected = useIsBranchSelected();
+  const user = useCurrentUser();
+  const darkTheme = createTheme({
+    palette: {
+      mode: "light",
+    },
+  });
   return (
-    <>
-      <h1>Start Page</h1> <p>{CONFIG.API_BASE_URL}</p>
-    </>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <RouterProvider
+        router={router}
+        context={{ isAuthenticated, isBranchSelected, user }}
+      />
+    </ThemeProvider>
   );
 }
 

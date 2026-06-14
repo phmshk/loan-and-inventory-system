@@ -1,8 +1,27 @@
+import { createRouter } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
 import App from "./App.tsx";
-// import { Providers } from "./providers/Providers.tsx";
+import "./index.css";
+import { QueryProvider } from "./providers/queryProvider.tsx";
+import { routeTree } from "./routeTree.gen";
+
+// Create a new router instance
+export const router = createRouter({
+  routeTree: routeTree,
+  context: {
+    isAuthenticated: false,
+    isBranchSelected: false,
+    user: null,
+  },
+});
+
+// Register the router instance for type safety
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 async function enableMocking() {
   if (import.meta.env.VITE_ENABLE_MOCKING === "false") {
@@ -20,9 +39,9 @@ if (!rootElement.innerHTML) {
   enableMocking().then(() => {
     root.render(
       <StrictMode>
-        {/* <Providers> */}
-        <App />
-        {/* </Providers> */}
+        <QueryProvider>
+          <App />
+        </QueryProvider>
       </StrictMode>,
     );
   });

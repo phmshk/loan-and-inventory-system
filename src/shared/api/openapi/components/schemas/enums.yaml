@@ -15,6 +15,31 @@ LoanStatus:
     - REDEEMED: Repaid and claimed by the customer.
   example: "ACTIVE"
 
+LoanSort:
+  type: string
+  enum: [asc, desc]
+  description: |
+    asc: ascending order
+    desc: descending order
+
+LoanSortFields:
+  type: string
+  enum:
+    - id
+    - ticketNumber
+    - customerId
+    - loanAmountCents
+    - itemDescription
+    - category
+    - status
+    - startDate
+    - endDate
+    - interestRatePercent
+    - feesCents
+    - branchId
+  description: Valid fields of the Loan entity allowed for server-side sorting.
+  example: "ticketNumber"
+
 UserRole:
   type: string
   enum: [APPRAISER, CASHIER, MANAGER]

@@ -24,8 +24,8 @@ export interface paths {
                     size?: components["parameters"]["SizeParam"];
                     status?: components["schemas"]["LoanStatus"];
                     category?: components["schemas"]["LoanCategory"];
-                    sortBy?: string;
-                    sortOrder?: "asc" | "desc";
+                    sortBy?: components["schemas"]["LoanSortFields"];
+                    sortOrder?: components["schemas"]["LoanSort"];
                 };
                 header?: never;
                 path?: never;
@@ -48,6 +48,8 @@ export interface paths {
                         };
                     };
                 };
+                401: components["responses"]["UnauthorizedError"];
+                500: components["responses"]["ServerError"];
             };
         };
         put?: never;
@@ -321,6 +323,136 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * User login
+         * @description Authenticates a user by username and returns user details.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        /** @example johndoe */
+                        username: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Successfully authenticated. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["user"];
+                    };
+                };
+                404: components["responses"]["NotFoundError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get current user
+         * @description Retrieves the current authenticated user by their ID query parameter.
+         */
+        get: {
+            parameters: {
+                query: {
+                    id: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Current user payload. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["user"];
+                    };
+                };
+                401: components["responses"]["UnauthorizedError"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/branches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List all branches
+         * @description Returns a list of all available business branches.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Array of branches. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["branch"][];
+                    };
+                };
+                401: components["responses"]["UnauthorizedError"];
+                500: components["responses"]["ServerError"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -355,6 +487,18 @@ export interface components {
          * @enum {string}
          */
         UserRole: "APPRAISER" | "CASHIER" | "MANAGER";
+        /**
+         * @description Valid fields of the Loan entity allowed for server-side sorting.
+         * @example ticketNumber
+         * @enum {string}
+         */
+        LoanSortFields: "id" | "ticketNumber" | "customerId" | "loanAmountCents" | "itemDescription" | "category" | "status" | "startDate" | "endDate" | "interestRatePercent" | "feesCents" | "branchId";
+        /**
+         * @description asc: ascending order
+         *     desc: descending order
+         * @enum {string}
+         */
+        LoanSort: "asc" | "desc";
         loan: {
             /**
              * Format: uuid
@@ -502,20 +646,6 @@ export interface components {
              */
             branchId?: string;
         };
-        branch: {
-            /**
-             * Format: uuid
-             * @example 550e8400-e29b-41d4-a716-446655440000
-             */
-            id: string;
-            /** @example Hamburg-Altona */
-            name: string;
-            /**
-             * @description Two-letter branch prefix used for generating ticket numbers.
-             * @example HH
-             */
-            code: string;
-        };
         user: {
             /**
              * Format: uuid
@@ -530,6 +660,20 @@ export interface components {
              * @example 550e8400-e29b-41d4-a716-446655440000
              */
             branchId: string;
+        };
+        branch: {
+            /**
+             * Format: uuid
+             * @example 550e8400-e29b-41d4-a716-446655440000
+             */
+            id: string;
+            /** @example Hamburg-Altona */
+            name: string;
+            /**
+             * @description Two-letter branch prefix used for generating ticket numbers.
+             * @example HH
+             */
+            code: string;
         };
     };
     responses: {
@@ -564,6 +708,34 @@ export interface components {
                         /** @example Value must be a positive integer representing cents. */
                         error: string;
                     }[];
+                };
+            };
+        };
+        /** @description The request lacks valid authentication credentials. */
+        UnauthorizedError: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @example UNAUTHORIZED */
+                    code: string;
+                    /** @example Unauthorized access or missing token. */
+                    message: string;
+                };
+            };
+        };
+        /** @description An unexpected internal server error occurred. */
+        ServerError: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @example INTERNAL_SERVER_ERROR */
+                    code: string;
+                    /** @example An unexpected error occurred. Please try again later. */
+                    message: string;
                 };
             };
         };

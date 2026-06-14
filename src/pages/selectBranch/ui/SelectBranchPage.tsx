@@ -1,27 +1,19 @@
 import { useBranchActions, useBranches } from "@/entities/branch";
-import type { Branch } from "@/shared/api";
 
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Link, useRouteContext } from "@tanstack/react-router";
+import { useRouteContext } from "@tanstack/react-router";
+import { BranchCard } from "./BranchCard";
+import { BranchSkeleton } from "./BranchSkeleton";
 
 export const SelectBranchPage = () => {
   const { data: branches, isLoading, error } = useBranches();
   const { setBranch } = useBranchActions();
   const { user } = useRouteContext({ from: "/_authenticated/branches" });
-
-  const handleSelectBranch = (branch: Branch) => {
-    setBranch(branch);
-  };
 
   return (
     <Box sx={{ minHeight: "100vh", py: 6 }}>
@@ -74,107 +66,14 @@ export const SelectBranchPage = () => {
           )}
 
           {/* skeletons */}
-          {isLoading && (
-            <Grid container spacing={3}>
-              {[1, 2, 3, 4, 5].map((id) => (
-                <Grid key={id} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <Skeleton
-                    variant="rounded"
-                    height={128}
-                    sx={{ borderRadius: 3 }}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          )}
+          {isLoading && <BranchSkeleton />}
 
           {/* available branches */}
           {branches && (
             <Grid container spacing={3}>
               {branches.map((branch) => (
                 <Grid key={branch.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                  <Card
-                    variant="outlined"
-                    sx={{
-                      borderRadius: 3,
-                      height: "100%",
-                      transition: "all 0.2s",
-                      "&:hover": {
-                        borderColor: "primary.main",
-                        boxShadow: 2,
-                        "& .arrow-indicator": { opacity: 1 },
-                      },
-                    }}
-                  >
-                    <Link
-                      to="/loans"
-                      search={(prev) => ({
-                        page: prev.page,
-                        limit: prev.limit,
-                        search: prev.search,
-                        status: prev.status,
-                      })}
-                      onClick={() => handleSelectBranch(branch)}
-                    >
-                      <CardActionArea
-                        sx={{
-                          height: "100%",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "stretch",
-                        }}
-                      >
-                        <CardContent
-                          sx={{
-                            p: 3,
-                            flexGrow: 1,
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Box>
-                            <Typography
-                              variant="subtitle1"
-                              sx={{
-                                fontWeight: "semibold",
-                                color: "text.primary",
-                              }}
-                            >
-                              {branch.name}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              sx={{
-                                color: "text.disabled",
-                                display: "block",
-                                mt: 0.5,
-                              }}
-                            >
-                              {branch.code}
-                            </Typography>
-                          </Box>
-
-                          <Typography
-                            className="arrow-indicator"
-                            variant="caption"
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              mt: 2,
-                              color: "primary.main",
-                              fontWeight: "medium",
-                              opacity: 0,
-                              transition: "opacity 0.2s",
-                            }}
-                          >
-                            Enter Dashboard
-                            <ArrowForwardIcon fontSize="inherit" />
-                          </Typography>
-                        </CardContent>
-                      </CardActionArea>
-                    </Link>
-                  </Card>
+                  <BranchCard branch={branch} onSelect={setBranch} />
                 </Grid>
               ))}
             </Grid>

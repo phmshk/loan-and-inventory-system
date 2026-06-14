@@ -10,9 +10,22 @@ export const loansDBMethods = {
   },
 
   query: (filters: LoanSearchFilters): GetLoansResponse => {
-    const { page, size, sortBy, sortOrder, category, status, search } = filters;
+    const {
+      page,
+      size,
+      sortBy,
+      sortOrder,
+      category,
+      status,
+      search,
+      branchId,
+    } = filters;
 
     let dataset = [...loansDB];
+
+    if (branchId) {
+      dataset = dataset.filter((loan) => loan.branchId === branchId);
+    }
 
     if (status) {
       dataset = dataset.filter((loan) => loan.status === status);

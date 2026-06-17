@@ -1,10 +1,10 @@
 import { useBranchActions, useCurrentBranch } from "@/entities/branch";
-import { useSessionActions } from "@/entities/session";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
 
+import { SignOutButton } from "@/features/signOut";
 import { LoansWidget } from "@/widgets/loans";
 import { Link, useRouteContext } from "@tanstack/react-router";
 
@@ -12,12 +12,6 @@ export const LoansPage = () => {
   const currentBranch = useCurrentBranch();
   const { clearBranch } = useBranchActions();
   const { user } = useRouteContext({ from: "/_authenticated" });
-  const { clearSession } = useSessionActions();
-
-  const handleLogout = () => {
-    clearSession();
-    clearBranch();
-  };
 
   const handleChangeBranch = () => {
     clearBranch();
@@ -78,20 +72,11 @@ export const LoansPage = () => {
               Change Branch
             </Button>
           </Link>
-          <Link to="/login">
-            <Button
-              onClick={handleLogout}
-              variant="contained"
-              color="error"
-              size="small"
-            >
-              Sign Out ({user.username})
-            </Button>
-          </Link>
+          <SignOutButton username={user.username} />
         </Box>
       </Box>
 
-      <LoansWidget userRole={user.role} />
+      <LoansWidget />
     </Box>
   );
 };

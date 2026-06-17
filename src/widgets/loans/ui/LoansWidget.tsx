@@ -36,6 +36,8 @@ export const LoansWidget = () => {
     filters: searchParams,
   });
 
+  console.log(data?.items);
+
   const updateSearch = (patch: Partial<LoanSearchFilters>) => {
     navigate({ search: (prev) => ({ ...prev, ...patch, page: 1 }) });
   };

@@ -1,13 +1,14 @@
-import { useMemo, useState } from "react";
-import {
-  useReactTable,
-  getCoreRowModel,
-  createColumnHelper,
-} from "@tanstack/react-table";
-import type { LoanSearchFilters } from "../model/types";
 import type { Loan, LoanStatus } from "@/shared/api";
-import Chip from "@mui/material/Chip";
 import { fromCentsToEur } from "@/shared/utils/helpers";
+import Chip from "@mui/material/Chip";
+import {
+  createColumnHelper,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useMemo, useState } from "react";
+import type { LoanSearchFilters } from "../model/types";
+import { LoanActions } from "@/features/manageLoan";
 
 interface Params {
   data: Loan[];
@@ -77,6 +78,21 @@ export const useLoansTableConfig = (params: Params) => {
       columnHelper.accessor("branchId", {
         id: "branchId",
         header: "Branch UUID",
+      }),
+      columnHelper.display({
+        id: "actions",
+        header: "Actions",
+        cell: (info) => {
+          const loan = info.row.original;
+          return (
+            <LoanActions
+              loan={loan}
+              onEditClick={(selectedLoan) => {
+                console.log("Edit loan:", selectedLoan.id);
+              }}
+            />
+          );
+        },
       }),
     ],
     [],

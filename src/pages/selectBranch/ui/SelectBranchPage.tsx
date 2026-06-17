@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import { useRouteContext } from "@tanstack/react-router";
 import { BranchCard } from "./BranchCard";
 import { BranchSkeleton } from "./BranchSkeleton";
+import { SignOutButton } from "@/features/signOut";
 
 export const SelectBranchPage = () => {
   const { data: branches, isLoading, error } = useBranches();
@@ -24,7 +25,8 @@ export const SelectBranchPage = () => {
             sx={{
               display: "flex",
               flexDirection: { xs: "column", md: "row" },
-              alignItems: { xs: "center", md: "center" },
+
+              alignItems: "center",
               justifyContent: "space-between",
               borderBottom: "1px solid",
               borderColor: "divider",
@@ -48,13 +50,24 @@ export const SelectBranchPage = () => {
                 Select the active branch office to begin operational workflow
               </Typography>
             </Box>
-            <Chip
-              label={`Role: ${user.role}`}
-              color="primary"
-              variant="outlined"
-              size="small"
-              sx={{ fontWeight: "medium", textTransform: "uppercase" }}
-            />
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Chip
+                label={`Role: ${user.role}`}
+                color="primary"
+                variant="outlined"
+                size="small"
+                sx={{ fontWeight: "medium", textTransform: "uppercase" }}
+              />
+              <SignOutButton username={user.username} />
+            </Box>
           </Box>
 
           {/* server error */}
